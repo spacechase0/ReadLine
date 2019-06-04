@@ -6,7 +6,7 @@ build_script:
   - echo "Building for %CONFIGURATION%"
   - ps: .\build.ps1 %CONFIGURATION%
 artifacts:
-  - path: .\artifacts\*.nupkg
+  - path: .\Artifacts\*.nupkg
     name: NuGet
 test_script:
   - ps: .\test.ps1
