@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net461;net472;netcoreapp2.2;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net45;net461;net472;net48;netcoreapp2.2;netcoreapp3.0;netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyTitle>ReadLine</AssemblyTitle>
     <AssemblyName>ReadLine</AssemblyName>
     <PackageId>ReadLine</PackageId>
@@ -12,10 +12,26 @@
     <AssemblyOriginatorKeyFile>snKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Updated to support .NET Standard v2.0 / Core 2.2 &amp; 3.0 / Framework v4.5 - v4.8</PackageReleaseNotes>
-    <Version>2.0.4</Version>
+    <Version>2.0.5</Version>
     <Description>A GNU-Readline like library for .NET</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>GIT</RepositoryType>
   </PropertyGroup>
+
+  <!-- @@ https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets @@ -->
+  <PropertyGroup>
+    <ArtifactsDirName>Artifacts</ArtifactsDirName>
+  </PropertyGroup>
+
+  <Target Name="CreateArtifactsDirectoryIfNotExists" Condition="!Exists('$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)')">
+    <Message Text="Creating artifact directory -&gt; '$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)\'" Importance="high" />
+    <MakeDir Directories="$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)" />
+  </Target>
+
+  <Target Name="PostPublish" AfterTargets="Pack" Condition=" '$(GeneratePackageOnBuild)' == 'true' ">
+    <CallTarget Targets="CreateArtifactsDirectoryIfNotExists" />
+    <Message Text="Copying artifact `.\bin\$(Configuration)\$(PackageId).$(PackageVersion).nupkg' to directory `$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)\'" Importance="high" />
+    <Copy SourceFiles=".\bin\$(Configuration)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)" />
+  </Target>
 
 </Project>
