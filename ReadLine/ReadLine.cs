@@ -7,62 +7,53 @@ namespace ReadLine
 {
     public static class ReadLine
     {
-        private static List<string> _history;
-
-
-        static ReadLine() => _history = new List<string>();
+        private static readonly List<string> History = new List<string>();
 
 
         public static IAutoCompleteHandler AutoCompletionHandler { private get; set; }
 
 
-        public static void AddHistory(params string[] text) => _history.AddRange(text);
+        public static void AddHistory(params string[] text) => History.AddRange(text);
 
 
-        public static List<string> GetHistory() => _history;
+        public static List<string> GetHistory() => History;
 
 
-        public static void ClearHistory() => _history = new List<string>();
+        public static void ClearHistory() => History.Clear();
 
 
-        public static string Read(string prompt = "", string @default = "")
+        public static string Read(string prompt, bool passwordMode) => Read(prompt, string.Empty, passwordMode);
+        public static string Read(string prompt = "", string @default = "", bool passwordMode = false)
         {
             Console.Write(prompt);
-            var keyHandler = new KeyHandler(new Console2(), _history, AutoCompletionHandler);
-            var text = GetText(keyHandler);
 
-            if (string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(@default))
-                text = @default;
-            else
-                _history.Add(text);
+            var console2 = new Console2 {
+                PasswordMode = passwordMode
+            };
+            var keyHandler = new KeyHandler(console2, History, AutoCompletionHandler);
 
-            return text;
-        }
-
-
-        public static string ReadPassword(string prompt = "")
-        {
-            Console.Write(prompt);
-            var keyHandler = new KeyHandler(new Console2
-            {
-                PasswordMode = true
-            }, null, null);
-            return GetText(keyHandler);
-        }
-
-
-        private static string GetText(KeyHandler keyHandler)
-        {
-            var keyInfo = Console.ReadKey(true);
+            #region GetText
+            // ----------------------------------------------------------------
+            var keyInfo = Console.ReadKey(intercept: !passwordMode);
+            
             while (keyInfo.Key != ConsoleKey.Enter)
             {
                 keyHandler.Handle(keyInfo);
-                keyInfo = Console.ReadKey(true);
+                keyInfo = Console.ReadKey(intercept: !passwordMode);
+            }
+            
+            var text = keyHandler.ToString();
+            // ----------------------------------------------------------------
+            #endregion GetText
+
+            if (!passwordMode) {
+                if (string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(@default))
+                    text = @default;
+                else
+                    History.Add(text);
             }
 
-            Console.WriteLine();
-
-            return keyHandler.Text;
+            return text;
         }
     }
 }

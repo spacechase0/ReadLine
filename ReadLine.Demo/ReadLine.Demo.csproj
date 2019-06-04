@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <DebugType>portable</DebugType>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
     <AssemblyName>ReadLine.Demo</AssemblyName>
     <OutputType>Exe</OutputType>
-    <PackageId>ReadLine.Demo</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

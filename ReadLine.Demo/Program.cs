@@ -24,7 +24,7 @@ namespace ReadLine.Demo
             var input = ReadLine.Read("(prompt)> ");
             Console.WriteLine(input);
 
-            input = ReadLine.ReadPassword("Enter Password> ");
+            input = ReadLine.Read("Enter Password> ", true);
             Console.WriteLine(input);
         }
     }

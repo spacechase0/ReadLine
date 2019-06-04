@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ReadLine.Tests
 {
-    public static class CharExtensions
+    internal static class CharExtensions
     {
         public const char ExclamationPoint = '!';
         public const char Space = ' ';
@@ -42,7 +42,7 @@ namespace ReadLine.Tests
             {CtrlW, Tuple.Create(ConsoleKey.W, ConsoleModifiers.Control)}
         };
 
-        public static ConsoleKeyInfo ToConsoleKeyInfo(this char c)
+        internal static ConsoleKeyInfo ToConsoleKeyInfo(this char c)
         {
             var (key, modifiers) = c.ParseKeyInfo();
 

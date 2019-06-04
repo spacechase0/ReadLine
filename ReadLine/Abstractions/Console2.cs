@@ -3,7 +3,7 @@ using System;
 
 namespace ReadLine.Abstractions
 {
-    internal class Console2 : IConsole
+    internal sealed class Console2 : IConsole
     {
         public bool PasswordMode { get; set; }
 

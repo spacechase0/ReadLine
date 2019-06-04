@@ -6,7 +6,7 @@ using ReadLine.Abstractions;
 
 namespace ReadLine
 {
-    public class KeyHandler
+    internal sealed class KeyHandler
     {
         private readonly IConsole _console2;
         private readonly List<string> _history;
@@ -20,7 +20,7 @@ namespace ReadLine
         private int _historyIndex;
         private ConsoleKeyInfo _keyInfo;
 
-        public KeyHandler(IConsole console, List<string> history, IAutoCompleteHandler autoCompleteHandler)
+        internal KeyHandler(IConsole console, List<string> history, IAutoCompleteHandler autoCompleteHandler)
         {
             _console2 = console;
 
@@ -47,7 +47,7 @@ namespace ReadLine
                 ["ControlP"] = PrevHistory,
                 ["DownArrow"] = NextHistory,
                 ["ControlN"] = NextHistory,
-                ["ControlU"] = () => { Backspace(_cursorPos); },
+                ["ControlU"] = () => Backspace(_cursorPos),
                 ["ControlK"] = () =>
                 {
                     var pos = _cursorPos;
@@ -94,7 +94,7 @@ namespace ReadLine
         }
 
 
-        public string Text => _text.ToString();
+        public override string ToString() => _text.ToString();
 
 
         private bool IsStartOfLine() => _cursorPos == 0;
@@ -207,6 +207,7 @@ namespace ReadLine
 
 
         private void Backspace() => Backspace(1);
+
 
         private void Backspace(int count)
         {
@@ -332,20 +333,16 @@ namespace ReadLine
         }
 
 
-        private void ResetAutoComplete()
-        {
-            _completions = null;
-            _completionsIndex = 0;
-        }
-
-
         public void Handle(ConsoleKeyInfo keyInfo)
         {
             _keyInfo = keyInfo;
 
             // If in auto complete mode and Tab wasn't pressed
-            if (IsInAutoCompleteMode() && _keyInfo.Key != ConsoleKey.Tab)
-                ResetAutoComplete();
+            if (IsInAutoCompleteMode() && _keyInfo.Key != ConsoleKey.Tab) {
+                // ResetAutoComplete
+                _completions = null;
+                _completionsIndex = 0;
+            }
 
             _keyActions.TryGetValue(BuildKeyInput(), out var action);
             action = action ?? WriteChar;

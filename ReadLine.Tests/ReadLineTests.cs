@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Xunit;
 using static ReadLine.ReadLine;
+using NUnit.Framework;
 
 
 namespace ReadLine.Tests
 {
-    public class ReadLineTests : IDisposable
+    internal sealed class ReadLineTests : IDisposable
     {
         public ReadLineTests()
         {
@@ -14,26 +14,26 @@ namespace ReadLine.Tests
             AddHistory(history);
         }
 
-        [Fact]
+        [Test]
         public void TestNoInitialHistory() 
         {
-            Assert.Equal(3, GetHistory().Count);
+            Assert.AreEqual(3, GetHistory().Count);
         }
 
-        [Fact]
+        [Test]
         public void TestUpdatesHistory() 
         {
             AddHistory("mkdir");
-            Assert.Equal(4, GetHistory().Count);
-            Assert.Equal("mkdir", GetHistory().Last());
+            Assert.AreEqual(4, GetHistory().Count);
+            Assert.AreEqual("mkdir", GetHistory().Last());
         }
 
-        [Fact]
+        [Test]
         public void TestGetCorrectHistory() 
         {
-            Assert.Equal("ls -a", GetHistory()[0]);
-            Assert.Equal("dotnet run", GetHistory()[1]);
-            Assert.Equal("git init", GetHistory()[2]);
+            Assert.AreEqual("ls -a", GetHistory()[0]);
+            Assert.AreEqual("dotnet run", GetHistory()[1]);
+            Assert.AreEqual("git init", GetHistory()[2]);
         }
 
         public void Dispose()
