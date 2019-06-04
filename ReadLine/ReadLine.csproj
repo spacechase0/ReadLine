@@ -18,21 +18,4 @@
     <RepositoryType>GIT</RepositoryType>
   </PropertyGroup>
 
-
-  <!-- @@ https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets @@ -->
-  <PropertyGroup>
-    <ArtifactsDirName>Artifacts</ArtifactsDirName>
-  </PropertyGroup>
-
-  <Target Name="CreateArtifactsDirectoryIfNotExists" Condition="!Exists('$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)')">
-    <Message Text="Creating artifact directory -&gt; '$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)\'" Importance="high" />
-    <MakeDir Directories="$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)" />
-  </Target>
-
-  <Target Name="PostPublish" AfterTargets="Pack" Condition=" '$(GeneratePackageOnBuild)' == 'true' ">
-    <CallTarget Targets="CreateArtifactsDirectoryIfNotExists" />
-    <Message Text="Copying artifact `.\bin\$(Configuration)\$(PackageId).$(PackageVersion).nupkg' to directory `$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)\'" Importance="high" />
-    <Copy SourceFiles=".\bin\$(Configuration)\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(MSBuildProjectDirectory)\..\$(ArtifactsDirName)" />
-  </Target>
-
 </Project>
