@@ -8,15 +8,17 @@ using static ReadLine.Tests.ConsoleKeyInfoExtensions;
 
 namespace ReadLine.Tests
 {
+    [TestFixture]
     internal sealed class KeyHandlerTests
     {
         private KeyHandler _keyHandler;
-        private readonly List<string> _history;
-        private readonly AutoCompleteHandler _autoCompleteHandler;
-        private readonly string[] _completions;
-        private readonly IConsole _console;
+        private List<string> _history;
+        private AutoCompleteHandler _autoCompleteHandler;
+        private string[] _completions;
+        private IConsole _console;
 
-        internal KeyHandlerTests()
+        [SetUp]
+        public void TestInitialize()
         {
             _autoCompleteHandler = new AutoCompleteHandler();
             _completions = _autoCompleteHandler.GetSuggestions("", 0);
@@ -29,7 +31,7 @@ namespace ReadLine.Tests
                     .ToList()
                     .ForEach(_keyHandler.Handle);
         }
-
+        
         [Test]
         public void TestWriteChar()
         {
