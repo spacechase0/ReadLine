@@ -6,7 +6,10 @@ using ReadLine.Abstractions;
 
 namespace ReadLine
 {
-    internal sealed class KeyHandler
+    public delegate bool CharMap(IKeyHandler keyHandler, ConsoleKeyInfo cki);
+
+
+    internal sealed class KeyHandler : IKeyHandler
     {
         private readonly IConsole _console2;
         private readonly List<string> _history;
@@ -19,6 +22,10 @@ namespace ReadLine
         private int _cursorPos;
         private int _historyIndex;
         private ConsoleKeyInfo _keyInfo;
+
+
+        private string BuildKeyInput() => _keyInfo.Modifiers != ConsoleModifiers.Control && _keyInfo.Modifiers != ConsoleModifiers.Shift ? _keyInfo.Key.ToString() : _keyInfo.Modifiers + _keyInfo.Key.ToString();
+    
 
         internal KeyHandler(IConsole console, List<string> history, IAutoCompleteHandler autoCompleteHandler)
         {
@@ -97,24 +104,25 @@ namespace ReadLine
         public override string ToString() => _text.ToString();
 
 
-        private bool IsStartOfLine() => _cursorPos == 0;
+        public bool IsStartOfLine() => _cursorPos == 0;
 
 
-        private bool IsEndOfLine() => _cursorPos == _cursorLimit;
+        public bool IsEndOfLine() => _cursorPos == _cursorLimit;
 
 
-        private bool IsStartOfBuffer() => _console2.CursorLeft == 0;
+        public bool IsStartOfBuffer() => _console2.CursorLeft == 0;
 
 
-        private bool IsEndOfBuffer() => _console2.CursorLeft == _console2.BufferWidth - 1;
+        public bool IsEndOfBuffer() => _console2.CursorLeft == _console2.BufferWidth - 1;
 
 
-        private bool IsInAutoCompleteMode() => _completions != null;
+        public bool IsInAutoCompleteMode() => _completions != null;
 
 
-        private void MoveCursorLeft() => MoveCursorLeft(1);
+        public void MoveCursorLeft() => MoveCursorLeft(1);
 
-        private void MoveCursorLeft(int count)
+
+        public void MoveCursorLeft(int count)
         {
             if (count > _cursorPos)
                 count = _cursorPos;
@@ -128,17 +136,14 @@ namespace ReadLine
         }
 
 
-        private void MoveCursorHome()
+        public void MoveCursorHome()
         {
             while (!IsStartOfLine())
                 MoveCursorLeft();
         }
 
 
-        private string BuildKeyInput() => _keyInfo.Modifiers != ConsoleModifiers.Control && _keyInfo.Modifiers != ConsoleModifiers.Shift ? _keyInfo.Key.ToString() : _keyInfo.Modifiers + _keyInfo.Key.ToString();
-
-
-        private void MoveCursorRight()
+        public void MoveCursorRight()
         {
             if (IsEndOfLine())
                 return;
@@ -152,41 +157,40 @@ namespace ReadLine
         }
 
 
-        private void MoveCursorEnd()
+        public void MoveCursorEnd()
         {
             while (!IsEndOfLine())
                 MoveCursorRight();
         }
 
 
-        private void ClearLine()
+        public void ClearLine()
         {
             MoveCursorEnd();
             Backspace(_cursorPos);
         }
 
 
-        private void WriteNewString(string str)
+        public void WriteNewString(string str)
         {
             ClearLine();
             WriteString(str);
         }
 
 
-        private void WriteString(string str)
+        public void WriteString(string str)
         {
             foreach (var character in str)
                 WriteChar(character);
         }
 
 
-        private void WriteChar() => WriteChar(_keyInfo.KeyChar);
+        public void WriteChar() => WriteChar(_keyInfo.KeyChar);
 
 
-        private void WriteChar(char c)
+        public void WriteChar(char c)
         {
-            if (IsEndOfLine())
-            {
+            if (IsEndOfLine()) {
                 _text.Append(c);
                 _console2.Write(c.ToString());
                 _cursorPos++;
@@ -206,10 +210,10 @@ namespace ReadLine
         }
 
 
-        private void Backspace() => Backspace(1);
+        public void Backspace() => Backspace(1);
 
 
-        private void Backspace(int count)
+        public void Backspace(int count)
         {
             if (count > _cursorPos)
                 count = _cursorPos;
@@ -227,7 +231,7 @@ namespace ReadLine
         }
 
 
-        private void Delete()
+        public void Delete()
         {
             if (IsEndOfLine())
                 return;
@@ -243,7 +247,7 @@ namespace ReadLine
         }
 
 
-        private void TransposeChars()
+        public void TransposeChars()
         {
             // local helper functions
             bool AlmostEndOfLine() => _cursorLimit - _cursorPos == 1;
@@ -274,7 +278,7 @@ namespace ReadLine
         }
 
 
-        private void StartAutoComplete()
+        public void StartAutoComplete()
         {
             Backspace(_cursorPos - _completionStart);
 
@@ -284,7 +288,7 @@ namespace ReadLine
         }
 
 
-        private void NextAutoComplete()
+        public void NextAutoComplete()
         {
             Backspace(_cursorPos - _completionStart);
 
@@ -297,7 +301,7 @@ namespace ReadLine
         }
 
 
-        private void PreviousAutoComplete()
+        public void PreviousAutoComplete()
         {
             Backspace(_cursorPos - _completionStart);
 
@@ -310,7 +314,7 @@ namespace ReadLine
         }
 
 
-        private void PrevHistory()
+        public void PrevHistory()
         {
             if (_historyIndex > 0)
             {
@@ -320,7 +324,7 @@ namespace ReadLine
         }
 
 
-        private void NextHistory()
+        public void NextHistory()
         {
             if (_historyIndex < _history.Count)
             {
@@ -333,7 +337,7 @@ namespace ReadLine
         }
 
 
-        public void Handle(ConsoleKeyInfo keyInfo)
+        internal void Handle(ConsoleKeyInfo keyInfo, CharMap callback = null)
         {
             _keyInfo = keyInfo;
 
@@ -345,8 +349,12 @@ namespace ReadLine
             }
 
             _keyActions.TryGetValue(BuildKeyInput(), out var action);
-            action = action ?? WriteChar;
-            action.Invoke();
+            if (action != null)
+              action.Invoke();
+            else {
+              if (callback == null || !callback.Invoke(this, keyInfo))
+                WriteChar();
+            }
         }
     }
 }

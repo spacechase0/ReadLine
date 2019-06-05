@@ -29,7 +29,7 @@ namespace ReadLine.Tests
 
             "Hello".Select(c => c.ToConsoleKeyInfo())
                     .ToList()
-                    .ForEach(_keyHandler.Handle);
+                    .ForEach(ci => _keyHandler.Handle(ci));
         }
         
         [Test]
@@ -39,7 +39,7 @@ namespace ReadLine.Tests
             
             " World".Select(c => c.ToConsoleKeyInfo())
                     .ToList()
-                    .ForEach(_keyHandler.Handle);
+                    .ForEach(ci => _keyHandler.Handle(ci));
                     
             Assert.AreEqual("Hello World", _keyHandler.ToString());
         }
@@ -54,8 +54,8 @@ namespace ReadLine.Tests
         [Test]
         public void TestDelete()
         {
-            new List<ConsoleKeyInfo>() { LeftArrow, Delete }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { LeftArrow, Delete }
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hell", _keyHandler.ToString());
         }
@@ -89,8 +89,8 @@ namespace ReadLine.Tests
         {
             var initialCursorCol = _console.CursorLeft;
 
-            new List<ConsoleKeyInfo>() { LeftArrow, CtrlT }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { LeftArrow, CtrlT }
+                .ForEach(ci => _keyHandler.Handle(ci));
             
             Assert.AreEqual("Helol", _keyHandler.ToString());
             Assert.AreEqual(initialCursorCol, _console.CursorLeft);
@@ -102,7 +102,7 @@ namespace ReadLine.Tests
             Enumerable
                 .Repeat(LeftArrow, 3)
                 .ToList()
-                .ForEach(_keyHandler.Handle);
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             var initialCursorCol = _console.CursorLeft;
 
@@ -128,8 +128,8 @@ namespace ReadLine.Tests
         [Test]
         public void TestHome()
         {
-            new List<ConsoleKeyInfo>() { Home, 'S'.ToConsoleKeyInfo() }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { Home, 'S'.ToConsoleKeyInfo() }
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("SHello", _keyHandler.ToString());
         }
@@ -137,8 +137,8 @@ namespace ReadLine.Tests
         [Test]
         public void TestControlA()
         {
-            new List<ConsoleKeyInfo>() { CtrlA, 'S'.ToConsoleKeyInfo() }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { CtrlA, 'S'.ToConsoleKeyInfo() }
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("SHello", _keyHandler.ToString());
         }
@@ -146,8 +146,8 @@ namespace ReadLine.Tests
         [Test]
         public void TestEnd()
         {
-            new List<ConsoleKeyInfo>() { Home, End, ExclamationPoint }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { Home, End, ExclamationPoint }
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hello!", _keyHandler.ToString());
         }
@@ -155,8 +155,8 @@ namespace ReadLine.Tests
         [Test]
         public void TestControlE()
         {
-            new List<ConsoleKeyInfo>() { CtrlA, CtrlE, ExclamationPoint }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { CtrlA, CtrlE, ExclamationPoint }
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hello!", _keyHandler.ToString());
         }
@@ -167,7 +167,7 @@ namespace ReadLine.Tests
             " N".Select(c => c.ToConsoleKeyInfo())
                 .Prepend(LeftArrow)
                 .ToList()
-                .ForEach(_keyHandler.Handle);
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hell No", _keyHandler.ToString());
         }
@@ -178,7 +178,7 @@ namespace ReadLine.Tests
             " N".Select(c => c.ToConsoleKeyInfo())
                 .Prepend(CtrlB)
                 .ToList()
-                .ForEach(_keyHandler.Handle);
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hell No", _keyHandler.ToString());
         }
@@ -186,8 +186,8 @@ namespace ReadLine.Tests
         [Test]
         public void TestRightArrow()
         {
-            new List<ConsoleKeyInfo>() { LeftArrow, RightArrow, ExclamationPoint }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { LeftArrow, RightArrow, ExclamationPoint }
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hello!", _keyHandler.ToString());
         }
@@ -198,7 +198,7 @@ namespace ReadLine.Tests
             Enumerable.Repeat(LeftArrow, 4)
                     .Append(CtrlD)
                     .ToList()
-                    .ForEach(_keyHandler.Handle);
+                    .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hllo", _keyHandler.ToString());
         }
@@ -206,8 +206,8 @@ namespace ReadLine.Tests
         [Test]
         public void TestControlF()
         {
-            new List<ConsoleKeyInfo>() { LeftArrow, CtrlF, ExclamationPoint }
-                .ForEach(_keyHandler.Handle);
+            new List<ConsoleKeyInfo> { LeftArrow, CtrlF, ExclamationPoint }
+                .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hello!", _keyHandler.ToString());
         }
@@ -242,7 +242,7 @@ namespace ReadLine.Tests
         {
             Enumerable.Repeat(UpArrow, _history.Count)
                     .ToList()
-                    .ForEach(_keyHandler.Handle);
+                    .ForEach(ci => _keyHandler.Handle(ci));
 
             _history.ForEach( history => {
                 Assert.AreEqual(history, _keyHandler.ToString());
@@ -255,7 +255,7 @@ namespace ReadLine.Tests
         {
             Enumerable.Repeat(UpArrow, _history.Count)
                     .ToList()
-                    .ForEach(_keyHandler.Handle);
+                    .ForEach(ci => _keyHandler.Handle(ci));
 
             _history.ForEach( history => {
                 Assert.AreEqual(history, _keyHandler.ToString());
@@ -297,7 +297,7 @@ namespace ReadLine.Tests
             " World".Select(c => c.ToConsoleKeyInfo())
                     .Append(CtrlW)
                     .ToList()
-                    .ForEach(_keyHandler.Handle);
+                    .ForEach(ci => _keyHandler.Handle(ci));
 
             Assert.AreEqual("Hello ", _keyHandler.ToString());
 
@@ -316,7 +316,9 @@ namespace ReadLine.Tests
 
             _keyHandler = new KeyHandler(new Console2(), _history, _autoCompleteHandler);
 
-            "Hi ".Select(c => c.ToConsoleKeyInfo()).ToList().ForEach(_keyHandler.Handle);
+            "Hi ".Select(c => c.ToConsoleKeyInfo())
+                 .ToList()
+                 .ForEach(ci => _keyHandler.Handle(ci));
 
             _completions.ToList().ForEach(completion => {
                 _keyHandler.Handle(Tab);
@@ -334,7 +336,9 @@ namespace ReadLine.Tests
 
             _keyHandler = new KeyHandler(new Console2(), _history, _autoCompleteHandler);
 
-            "Hi ".Select(c => c.ToConsoleKeyInfo()).ToList().ForEach(_keyHandler.Handle);
+            "Hi ".Select(c => c.ToConsoleKeyInfo())
+                 .ToList()
+                 .ForEach(ci => _keyHandler.Handle(ci));
 
             // Bring up the first Autocomplete
             _keyHandler.Handle(Tab);

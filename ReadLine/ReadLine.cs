@@ -22,8 +22,9 @@ namespace ReadLine
         public static void ClearHistory() => History.Clear();
 
 
-        public static string Read(string prompt, bool passwordMode) => Read(prompt, string.Empty, passwordMode);
-        public static string Read(string prompt = "", string @default = "", bool passwordMode = false)
+        public static string Read(string prompt, CharMap callback) => Read(prompt, string.Empty, false, callback);
+        public static string Read(string prompt, bool passwordMode, CharMap callback = null) => Read(prompt, string.Empty, passwordMode, callback);
+        public static string Read(string prompt = "", string @default = "", bool passwordMode = false, CharMap callback = null)
         {
             Console.Write(prompt);
 
@@ -38,7 +39,7 @@ namespace ReadLine
             
             while (keyInfo.Key != ConsoleKey.Enter)
             {
-                keyHandler.Handle(keyInfo);
+                keyHandler.Handle(keyInfo, callback);
                 keyInfo = Console.ReadKey(intercept: !passwordMode);
             }
             
