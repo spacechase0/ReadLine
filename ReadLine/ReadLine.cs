@@ -31,23 +31,24 @@ namespace ReadLine
             var console2 = new Console2 {
                 PasswordMode = passwordMode
             };
-            var keyHandler = new KeyHandler(console2, History, AutoCompletionHandler);
+            var keyHandler = new KeyHandler(console2, History, passwordMode, AutoCompletionHandler);
 
             #region GetText
             // ----------------------------------------------------------------
-            var keyInfo = Console.ReadKey(intercept: !passwordMode);
+            var keyInfo = Console.ReadKey(intercept: true);
             
             while (keyInfo.Key != ConsoleKey.Enter)
             {
                 keyHandler.Handle(keyInfo, callback);
-                keyInfo = Console.ReadKey(intercept: !passwordMode);
+                keyInfo = Console.ReadKey(intercept: true);
             }
             
-            var text = keyHandler.ToString();
+            var text = string.Empty;
             // ----------------------------------------------------------------
             #endregion GetText
 
             if (!passwordMode) {
+                text = keyHandler.ToString();
                 if (string.IsNullOrWhiteSpace(text) && !string.IsNullOrWhiteSpace(@default))
                     text = @default;
                 else

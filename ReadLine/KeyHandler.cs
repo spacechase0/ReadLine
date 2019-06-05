@@ -15,6 +15,7 @@ namespace ReadLine
         private readonly List<string> _history;
         private readonly Dictionary<string, Action> _keyActions;
         private readonly StringBuilder _text;
+        private readonly bool _passwordMode;
         private string[] _completions;
         private int _completionsIndex;
         private int _completionStart;
@@ -27,10 +28,10 @@ namespace ReadLine
         private string BuildKeyInput() => _keyInfo.Modifiers != ConsoleModifiers.Control && _keyInfo.Modifiers != ConsoleModifiers.Shift ? _keyInfo.Key.ToString() : _keyInfo.Modifiers + _keyInfo.Key.ToString();
     
 
-        internal KeyHandler(IConsole console, List<string> history, IAutoCompleteHandler autoCompleteHandler)
+        internal KeyHandler(IConsole console, List<string> history, bool passwordMode, IAutoCompleteHandler autoCompleteHandler)
         {
             _console2 = console;
-
+            _passwordMode = passwordMode;
             _history = history ?? new List<string>();
             _historyIndex = _history.Count;
             _text = new StringBuilder();
@@ -192,8 +193,10 @@ namespace ReadLine
         {
             if (IsEndOfLine()) {
                 _text.Append(c);
-                _console2.Write(c.ToString());
                 _cursorPos++;
+
+                if (!_passwordMode)
+                    _console2.Write(c.ToString());
             }
             else
             {
@@ -201,8 +204,13 @@ namespace ReadLine
                 var top = _console2.CursorTop;
                 var str = _text.ToString().Substring(_cursorPos);
                 _text.Insert(_cursorPos, c);
-                _console2.Write(c + str);
-                _console2.SetCursorPosition(left, top);
+                
+                if (!_passwordMode)
+                {
+                  _console2.Write(c + str);
+                  _console2.SetCursorPosition(left, top);
+                }
+
                 MoveCursorRight();
             }
 
