@@ -38,8 +38,8 @@ namespace ReadLine.Demo
         {
             bool isHandled;
 
-            switch (cki.KeyChar) {
-              case '\b':
+            switch (cki.Key) {
+              case ConsoleKey.Backspace:
                 keyHandler.Backspace();
                 isHandled = true;
                 break;
