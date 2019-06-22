@@ -12,7 +12,7 @@
     <AssemblyOriginatorKeyFile>snKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Fixed password option to not show on the screen.</PackageReleaseNotes>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <Description>A GNU-Readline like library for .NET</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>GIT</RepositoryType>

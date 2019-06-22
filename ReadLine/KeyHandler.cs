@@ -131,7 +131,7 @@ namespace ReadLine
             if (count > _console2.CursorLeft)
                 _console2.SetCursorPosition(_console2.BufferWidth - 1, _console2.CursorTop);
             else
-                _console2.SetCursorPosition(_console2.CursorLeft - 1, _console2.CursorTop);
+                _console2.SetCursorPosition(_console2.CursorLeft - count, _console2.CursorTop);
 
             _cursorPos -= count;
         }
