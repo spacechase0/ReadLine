@@ -26,7 +26,7 @@ namespace ReadLine.Abstractions
         public void SetCursorPosition(int left, int top)
         {
             if (!PasswordMode)
-                Console.SetCursorPosition(left, top);
+              Console.SetCursorPosition(left, top);
         }
 
 
@@ -35,10 +35,10 @@ namespace ReadLine.Abstractions
             if (PasswordMode)
                 value = new string(default(char), value.Length);
 
-            Console.Write(value);
+            ReadLine.Instance.WriteFunction(value);
         }
 
 
-        public void WriteLine(string value) => Console.WriteLine(value);
+        public void WriteLine(string value) => ReadLine.Instance.WriteFunction(value + Environment.NewLine);
     }
 }

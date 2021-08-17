@@ -17,6 +17,7 @@ namespace ReadLine
 
         public IAutoCompleteHandler AutoCompletionHandler { get; set; }
 
+        public Action<string> WriteFunction { get; set; } = ( str ) => Console.Write( str );
 
         public void AddHistory(params string[] text) => _history.AddRange(text);
 
@@ -29,7 +30,7 @@ namespace ReadLine
 
         public string Read(string prompt = "", string @default = "")
         {
-            Console.Write(prompt);
+            WriteFunction.Invoke(prompt);
             var keyHandler = new KeyHandler(new Console2(), _history, AutoCompletionHandler);
             var text = GetText(keyHandler);
 
@@ -44,7 +45,7 @@ namespace ReadLine
 
         public string ReadPassword(string prompt = "")
         {
-            Console.Write(prompt);
+            WriteFunction.Invoke( prompt);
             var keyHandler = new KeyHandler(new Console2
             {
                 PasswordMode = true
@@ -64,7 +65,7 @@ namespace ReadLine
                 keyInfo = Console.ReadKey(true);
             }
 
-            Console.WriteLine();
+            Instance.WriteFunction.Invoke( Environment.NewLine );
 
             return keyHandler.Text;
         }

@@ -76,6 +76,8 @@ namespace ReadLine
 
                         _completionStart = text.LastIndexOfAny(autoCompleteHandler.Separators);
                         _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;
+                        if ( _completionStart == 0 && text != "" )
+                            _completionStart = text.Length;
 
                         _completions = autoCompleteHandler.GetSuggestions(text, _completionStart);
                         _completions = _completions?.Length == 0 ? null : _completions;
@@ -211,8 +213,19 @@ namespace ReadLine
 
         private void Backspace(int count)
         {
+            if ( count == 0 )
+                return;
+
             if (count > _cursorPos)
                 count = _cursorPos;
+
+            // Hack that makes this work with SMAPI
+            if ( count != 1 )
+            {
+                for ( int i = 0; i < count; ++i )
+                    Backspace( 1 );
+                return;
+            }
 
             MoveCursorLeft(count);
             var index = _cursorPos;
