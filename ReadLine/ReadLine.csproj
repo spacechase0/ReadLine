@@ -12,8 +12,8 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>snKey.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Removed one SMAPI "tweak" that actually made things work inconsistently.</PackageReleaseNotes>
-    <Version>2.2.1</Version>
+    <PackageReleaseNotes>Removed some code that was causing a SMAPI crash.</PackageReleaseNotes>
+    <Version>2.2.2</Version>
     <Description>A GNU-Readline like library for .NET
 (Forked and tweaked for Stardew Modding API)</Description>
     <ArtifactsDirName>artifacts</ArtifactsDirName>

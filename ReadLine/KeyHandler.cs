@@ -117,8 +117,8 @@ namespace ReadLine
 
         private void MoveCursorLeft(int count)
         {
-            if (count > _cursorPos)
-                count = _cursorPos;
+            /*if (count > _cursorPos)
+                count = _cursorPos;*/
 
             if (count > _console2.CursorLeft)
                 _console2.SetCursorPosition(_console2.BufferWidth - 1, _console2.CursorTop - 1);
